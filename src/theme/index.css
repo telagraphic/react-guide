@@ -1,0 +1,147 @@
+@import 'tailwindcss';
+@plugin '@tailwindcss/typography';
+
+/* Dark variant follows the .dark class on <html>; we toggle it from React. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ----------------------------------------------------------------------- */
+/* Theme tokens — Dracula PRO Light is the :root default, Dracula is .dark */
+/* ----------------------------------------------------------------------- */
+
+:root {
+  /* Dracula PRO Light — desaturated accents tuned for AA contrast on cream */
+  --color-bg: #f8f8f2;
+  --color-surface: #efefe8;
+  --color-surface-2: #e3e3da;
+  --color-fg: #22221b;
+  --color-muted: #5b5f6b;
+  --color-border: #d8d8d0;
+  --color-accent: #644ac9;     /* purple */
+  --color-accent-2: #a4286a;   /* pink */
+  --color-cyan: #036a96;
+  --color-green: #14710a;
+  --color-orange: #a34d14;
+  --color-pink: #a4286a;
+  --color-purple: #644ac9;
+  --color-red: #cb3a2f;
+  --color-yellow: #846e15;
+}
+
+.dark {
+  /* Dracula */
+  --color-bg: #282a36;
+  --color-surface: #21222c;
+  --color-surface-2: #44475a;
+  --color-fg: #f8f8f2;
+  --color-muted: #6272a4;
+  --color-border: #44475a;
+  --color-accent: #bd93f9;
+  --color-accent-2: #ff79c6;
+  --color-cyan: #8be9fd;
+  --color-green: #50fa7b;
+  --color-orange: #ffb86c;
+  --color-pink: #ff79c6;
+  --color-purple: #bd93f9;
+  --color-red: #ff5555;
+  --color-yellow: #f1fa8c;
+}
+
+/* ----------------------------------------------------------------------- */
+/* Tailwind v4 @theme — expose tokens as utility colors                    */
+/* ----------------------------------------------------------------------- */
+
+@theme inline {
+  --color-bg: var(--color-bg);
+  --color-surface: var(--color-surface);
+  --color-surface-2: var(--color-surface-2);
+  --color-fg: var(--color-fg);
+  --color-muted: var(--color-muted);
+  --color-border: var(--color-border);
+  --color-accent: var(--color-accent);
+  --color-accent-2: var(--color-accent-2);
+  --color-cyan: var(--color-cyan);
+  --color-green: var(--color-green);
+  --color-orange: var(--color-orange);
+  --color-pink: var(--color-pink);
+  --color-purple: var(--color-purple);
+  --color-red: var(--color-red);
+  --color-yellow: var(--color-yellow);
+
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+/* ----------------------------------------------------------------------- */
+/* Base                                                                    */
+/* ----------------------------------------------------------------------- */
+
+html, body, #root { height: 100%; }
+
+body {
+  font-family: var(--font-sans);
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background-color: var(--color-surface-2);
+  color: var(--color-fg);
+}
+
+/* ----------------------------------------------------------------------- */
+/* Shiki — let our theme drive the surface, not Shiki's inline bg          */
+/* ----------------------------------------------------------------------- */
+
+.shiki,
+.shiki span {
+  background-color: transparent !important;
+}
+
+pre.shiki {
+  background-color: var(--color-surface) !important;
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  /* padding: .5rem; */
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+/* Inline code: don't render a giant block, just a chip */
+:not(pre) > code {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 0.25rem;
+  padding: 0.125rem 0.375rem;
+}
+
+/* ----------------------------------------------------------------------- */
+/* Prose tweaks — keep typography.plugin sensible against our tokens       */
+/* ----------------------------------------------------------------------- */
+
+.prose {
+  --tw-prose-body: var(--color-fg);
+  --tw-prose-headings: var(--color-fg);
+  --tw-prose-links: var(--color-accent);
+  --tw-prose-bold: var(--color-fg);
+  --tw-prose-counters: var(--color-muted);
+  --tw-prose-bullets: var(--color-muted);
+  --tw-prose-hr: var(--color-border);
+  --tw-prose-quotes: var(--color-fg);
+  --tw-prose-quote-borders: var(--color-accent);
+  --tw-prose-captions: var(--color-muted);
+  --tw-prose-code: var(--color-pink);
+  --tw-prose-pre-code: var(--color-fg);
+  --tw-prose-pre-bg: var(--color-surface);
+  --tw-prose-th-borders: var(--color-border);
+  --tw-prose-td-borders: var(--color-border);
+}
+
+/* .prose pre { padding: 0; background: transparent; } */
+.prose pre code { background: transparent; padding: 0; border: 0; }
+.prose code::before, .prose code::after { content: ''; }
+.prose a { text-decoration-color: color-mix(in oklab, var(--color-accent) 60%, transparent); }
+.prose a:hover { text-decoration-color: var(--color-accent); }
