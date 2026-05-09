@@ -27,11 +27,13 @@ Each owns one job:
 
 Then import `TodoList` somewhere in your app and render it.
 
-## Hints
+## Implementation
 
-- Each component is a function that returns JSX. Default-export it.
-- The placeholder bodies don't need props yet — just render anything visible so you can see all three.
-- `TodoList` should render a `<ul>` containing the other two as placeholders.
+- [ ] Three component files exist: `TodoList.jsx`, `Todo.jsx`, `TodoComposer.jsx`
+- [ ] Each is a default export
+- [ ] `Todo` and `TodoComposer` each render a placeholder `<li>`
+- [ ] `TodoList` renders a `<ul>` containing one `<TodoComposer />` and one `<Todo />`
+- [ ] `TodoList` is mounted somewhere in your app and visible on the page
 
 ## Try it
 
@@ -86,9 +88,7 @@ export default function App() {
 
 ## Why this works
 
-Stubbing all three components first lets you confirm the import wiring and JSX shape *before* you have any logic to debug. If you tried to write `TodoList` end-to-end before `Todo.jsx` existed, the import would crash and you'd be debugging two layers at once.
-
-This is also where you decide the data flow. `TodoList` rendering both children directly (instead of having `TodoComposer` somehow live inside `Todo`) is the structural choice that makes the rest of the walkthrough work — `TodoList` is the parent, the other two are siblings.
+Stubbing all three files first means imports work end-to-end before any logic exists. The shape — `TodoList` as parent, `Todo` and `TodoComposer` as siblings — is the structural decision the rest of the walkthrough builds on.
 
 ## What you should see now
 

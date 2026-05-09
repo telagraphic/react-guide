@@ -8,19 +8,21 @@ Typing a label and clicking "Add Todo" appends a new todo to the list. The input
 
 ## React concepts you'll use
 
-- **Controlled inputs** — `value={label} onChange={…}`. The component owns the input's value via state.
-- **Lifting state up** — the *list* is in `TodoList`, but the *draft input text* is in `TodoComposer`. Each piece of state lives where it's needed.
-- **Handlers as props** — `TodoList` gives `TodoComposer` a callback (`handleAddTodo`) that the composer invokes when the user clicks Add.
-- **Immutable append** — `[...todos, newTodo]`. See [Destructuring and spread](/concepts/modern-js/destructuring-and-spread).
-- **Stable IDs** — `crypto.randomUUID()` instead of `Math.random()` to avoid duplicate-key bugs.
+- Controlled inputs
+- Lifting state up — see [Component conventions](/concepts/components/conventions)
+- Handlers passed as props
+- Immutable append — see [Destructuring and spread](/concepts/modern-js/destructuring-and-spread)
+- Stable IDs (`crypto.randomUUID()`)
 
-## Hints
+## Implementation
 
-1. `TodoComposer` needs its own `useState` for the input value. Call it `label`.
-2. Wire the input as controlled: `value={label}` and `onChange={(e) => setLabel(e.target.value)}`.
-3. Disable the Add button when `label` is empty.
-4. When the user clicks Add, build a todo object: `{ id: crypto.randomUUID(), label, completed: false }`. Pass it to a prop callback (`handleAddTodo`). Then clear the input.
-5. In `TodoList`, declare `const handleAddTodo = (newTodo) => setTodos([...todos, newTodo])`. Pass it to `<TodoComposer handleAddTodo={handleAddTodo} />`.
+- [ ] `TodoComposer` holds the current input draft in its own state
+- [ ] The input is controlled (its value comes from state, typing updates state)
+- [ ] The Add button is disabled while the input is empty
+- [ ] Clicking Add creates a new todo with a unique id, the current draft as its label, and `completed: false`
+- [ ] After adding, the input clears
+- [ ] `TodoList` provides a handler that appends a new todo to its state, immutably
+- [ ] That handler is passed to `TodoComposer` as a prop, and `TodoComposer` calls it on Add
 
 ## Try it
 
@@ -99,18 +101,7 @@ export default function TodoList() {
 
 ## Why this works
 
-There's a clean split between **whose state goes where**:
-
-- The **input field's draft text** is local to `TodoComposer`. No other component cares what's currently typed.
-- The **array of todos** lives in `TodoList`. Multiple children (`Todo`, `TodoComposer`) need to interact with it, so it lives at the lowest common ancestor.
-
-That principle has a name: **lift state to the lowest common ancestor of the components that use it.** In practice, this means: when you find yourself wanting to share state between siblings, move it to their parent.
-
-The composer never reaches into `TodoList`'s array. Instead, it calls `handleAddTodo(newTodo)` — which is just a function reference passed down as a prop. The composer doesn't know that `handleAddTodo` calls `setTodos([...todos, newTodo])` internally. From the composer's perspective, it's just "tell my parent I want a new todo." That decoupling is what lets you swap the parent's storage (eventually a server, a context, a reducer) without touching the composer.
-
-About the `id`: an earlier draft of this code used `Math.floor(Math.random() * 10000)` for IDs. With ~50 todos that has roughly a 25% chance of producing a duplicate — and duplicate `key` props are one of the most insidious React bugs because the symptom (state from one row appearing on another) looks like a state-update bug, not a key bug. `crypto.randomUUID()` is built into modern browsers and gives you a guaranteed-unique ID for free.
-
-About the `[...todos, newTodo]` pattern: this is the immutable append from the [destructuring and spread page](/concepts/modern-js/destructuring-and-spread). `setTodos([...todos, newTodo])` produces a *new* array; React's `Object.is` check sees the change and re-renders. `todos.push(newTodo)` would mutate in place, the reference wouldn't change, and nothing would re-render.
+The two pieces of state live where they're each needed: the input draft is local to `TodoComposer` (no one else cares); the array lives in `TodoList` (multiple children need it). When state is shared between siblings, lift it to their lowest common ancestor — that's `TodoList`. The composer never writes to the array; it calls the prop callback the parent gave it. `[...todos, newTodo]` produces a new array reference, which is what triggers React's re-render — `todos.push` mutates in place and would do nothing. `crypto.randomUUID()` replaces `Math.random()` to avoid duplicate keys, which look like state-update bugs and are notoriously hard to diagnose.
 
 ## What you should see now
 

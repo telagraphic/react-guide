@@ -8,17 +8,17 @@ Each todo has an "Edit" / "Save" toggle. In edit mode, the label is an `<input>`
 
 ## React concepts you'll use
 
-- **Local component state** — `editing` lives inside `Todo`, not `TodoList`. It's per-row UI state.
-- **Conditional rendering** — `{editing ? <input /> : <span />}` swaps which element shows.
-- **Reusing `handleUpdateTodo`** — editing the label is the same kind of update as toggling completed: produce `{ ...todo, label: e.target.value }` and ask the parent to apply it.
+- Local component state (per-row UI state, not lifted)
+- Conditional rendering — see [Conditional rendering](/concepts/jsx/conditional-rendering)
+- Reusing `handleUpdateTodo` from step 7
 
-## Hints
+## Implementation
 
-1. Add `useState(false)` for `editing` inside `Todo`. Toggle it when the Edit/Save button is clicked.
-2. The button label is `editing ? 'Save' : 'Edit'`.
-3. While editing, render an `<input>` with `value={todo.label}` and `onChange={…}` instead of the `<span>`.
-4. The `onChange` should call `handleUpdateTodo({ ...todo, label: e.target.value })` — same handler you wrote in step 7.
-5. Hide the Delete button while editing: `{!editing && <button …>Delete</button>}`.
+- [ ] `Todo` holds an `editing` boolean in its own state
+- [ ] An Edit/Save button toggles `editing` and shows "Edit" or "Save" depending on the current value
+- [ ] When editing, the label area renders an `<input>` instead of the `<span>`
+- [ ] Typing in the input updates `todo.label` via the same parent handler used for toggling
+- [ ] The Delete button is hidden while editing
 
 ## Try it
 
@@ -73,35 +73,11 @@ export default function Todo({ todo, handleUpdateTodo, handleDeleteTodo }) {
 
 ## Why this works
 
-This step is mostly about **deciding where new state lives**.
-
-The `editing` flag is *per-row, transient UI state*. No other component cares whether row #2 is currently in edit mode. Lifting it to `TodoList` would mean either:
-
-- a single "which row is editing" field there (forcing a "one at a time" rule), or
-- a parallel array tracking each row's edit state (which is just per-row state, awkwardly stored centrally).
-
-Both are worse than the obvious answer: keep `editing` inside `Todo`. Each `Todo` instance gets its own `editing` cell; React tracks them independently because each is a different *component instance*.
-
-Compare that to `todo.label` and `todo.completed`, which **do** live in the parent's array. Why the difference? Because those fields are *part of the data model* — they get persisted, they get rendered as a list, they survive across the row's lifetime. `editing` is *purely about the UI* and doesn't outlive the user's edit gesture.
-
-A useful rule: **if state would matter on a server or in a database, it lives in the parent (the data layer). If it's only meaningful while the user is interacting with this specific UI, it lives in the component (the view layer).**
-
-The label-edit handler reuses `handleUpdateTodo` from step 7. That's the payoff of the `{ ...todo, field: newValue }` pattern: any field can be updated through the same channel. Whether it's `completed: !todo.completed` or `label: e.target.value`, the parent doesn't need a separate handler per field.
+`editing` is *transient UI state* — only meaningful while this row is being edited — so it lives inside `Todo`. Compare to `todo.label` and `todo.completed`, which are part of the data model and live in the parent's array. A useful rule: state that would matter on a server lives in the parent (the data layer); state that only matters while the user interacts with this specific row lives in the component (the view layer). Editing reuses `handleUpdateTodo` from step 7 — any field on a todo can flow through the same channel.
 
 ### Cautionary aside: the dead `useState`
 
-The original "Final Code" had this in `Todo`:
-
-```jsx
-const [completed, setCompleted] = useState(false);
-const [editing, setEditing] = useState(false);
-```
-
-…but `completed` and `setCompleted` were never used. The checkbox actually read `todo.completed` (from the parent), not the local `completed`. The local one was leftover code from an earlier draft.
-
-This is a common bug: **shadowing parent state with local state**. If the original had used the local `completed` state for the checkbox, you'd see two sources of truth: the parent's `todo.completed` (what gets persisted, what shows up in the array) and the child's `completed` (what's actually rendered). They'd drift, and the bug would look like "my checkbox toggles but the data doesn't update."
-
-Rule of thumb: if you find yourself adding `useState` for a value that's already a prop, stop. Either use the prop directly, or lift the new requirement up to whoever owns the data.
+The original "Final Code" had `const [completed, setCompleted] = useState(false)` in `Todo`, declared but never used (the checkbox actually read `todo.completed` from props). This is the **shadowed-parent-state** bug: two sources of truth that quietly drift. Rule of thumb: if you're about to add `useState` for a value that's already a prop, stop — use the prop directly, or lift the new requirement up to whoever owns the data.
 
 ## What you should see now
 

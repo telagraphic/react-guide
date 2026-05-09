@@ -8,16 +8,16 @@ Each todo has a "Delete" button. Clicking it removes only that todo.
 
 ## React concepts you'll use
 
-- **`.filter` for "remove one item"** — produces a new array with the matching item gone.
-- **Handlers down, data up** — same pattern as toggle, just a different verb.
-- **Inline arrow handler** — `onClick={() => handleDeleteTodo(todo.id)}` — fine here because the closure is one statement; see [Component conventions](/concepts/components/conventions).
+- `.filter` to remove one item from an array
+- Handlers down, data up (same shape as toggle)
+- Inline arrow handlers — see [Component conventions](/concepts/components/conventions)
 
-## Hints
+## Implementation
 
-1. In `TodoList`, write `handleDeleteTodo(id)`. Use `.filter` to keep all todos except the one with that id.
-2. Pass `handleDeleteTodo` to `<Todo />` as a prop.
-3. In `Todo`, add a `<button>` with `onClick={() => handleDeleteTodo(todo.id)}`.
-4. Render the button next to (or below) the checkbox/label group.
+- [ ] `TodoList` exposes a handler that takes an id and removes the matching todo from state immutably
+- [ ] That handler is passed to each `<Todo />` as a prop
+- [ ] Each `Todo` renders a Delete button
+- [ ] Clicking Delete calls the parent handler with this row's id
 
 ## Try it
 
@@ -95,19 +95,15 @@ export default function TodoList() {
 
 ## Why this works
 
-`.filter` is the inverse of `[...todos, newTodo]` from step 6. They're the two halves of "modify a list immutably":
+`.filter` is the inverse of `[...todos, newTodo]`: append vs. remove, both producing new arrays.
 
-| Operation         | Pattern                               |
-| ----------------- | ------------------------------------- |
-| Append            | `[...todos, newTodo]`                 |
-| Remove            | `todos.filter((t) => t.id !== id)`    |
-| Replace one       | `todos.map((t) => t.id === id ? new : t)` |
+| Operation     | Pattern                                              |
+| ------------- | ---------------------------------------------------- |
+| Append        | `[...todos, newTodo]`                                |
+| Remove        | `todos.filter((t) => t.id !== id)`                   |
+| Replace one   | `todos.map((t) => t.id === id ? next : t)`           |
 
-All three return a *new* array. None of them mutate `todos`.
-
-The shape of `handleDeleteTodo(id)` is worth noticing: it takes an `id` argument, not the whole todo object. That's because deletion only needs the identifier — there's no "new state" to construct, just an item to remove. Compare to `handleUpdateTodo(updatedTodo)`, which needs the full new object because the caller is the one *building* the change.
-
-A subtle rule that holds across all three handlers: **the child decides what should happen, the parent decides how to record it.** `Todo` knows "the user clicked delete on me." It doesn't know `setTodos` exists. `TodoList` knows the array. It doesn't know which row was clicked until told. Each component sees only what it needs to do its job.
+Notice the asymmetry: `handleDeleteTodo` takes only an `id`, while `handleUpdateTodo` takes a whole new object. Deletion needs only the identifier; updates need the new value. Each handler accepts the smallest input that does its job.
 
 ## What you should see now
 

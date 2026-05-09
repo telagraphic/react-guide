@@ -8,16 +8,17 @@ The `todos` array lives in `useState`. The rendered output is identical to step 
 
 ## React concepts you'll use
 
-- **`useState`** — see [`useState`](/concepts/hooks/usestate). Returns `[value, setter]`.
-- **Initial state via the `useState` argument** — pass the starting array as the argument.
-- **Why state at all** — calling the setter triggers a re-render with the new value. A `const` doesn't.
+- `useState` — see [`useState`](/concepts/hooks/usestate)
+- Initial state via the `useState` argument
+- Why state at all (a `const` doesn't trigger re-renders)
 
-## Hints
+## Implementation
 
-1. Import `useState` from `'react'` (named import).
-2. Replace `const todos = […]` with `const [todos, setTodos] = useState([…])`.
-3. The starting array is the same one from step 3 — pass it directly as the `useState` argument.
-4. You don't need `setTodos` yet. Just declaring it sets up the next step.
+- [ ] `useState` is imported from `react`
+- [ ] The todos array is held in `useState` instead of a plain `const`
+- [ ] The initial value of state is the same array from step 3
+- [ ] The setter is destructured but not yet called (later steps use it)
+- [ ] The rendered output is identical to step 3
 
 ## Try it
 
@@ -51,15 +52,7 @@ export default function TodoList() {
 
 ## Why this works
 
-The visible result is the same, but the *machinery* is different. Some things to internalize:
-
-- **`useState` returns the same `[value, setter]` shape every render.** The `value` (`todos`) is whatever it was last set to; the `setter` (`setTodos`) is stable across renders.
-- **The argument to `useState` is only used on the first render.** It's the *initial* value. After that, the value comes from whatever `setTodos` was last called with.
-- **Calling `setTodos(newArray)` schedules a re-render.** It does *not* mutate the array, and it does *not* change `todos` synchronously in the current render. The new value shows up on the next render.
-
-If you tried to mutate the array in place — `todos.push(newTodo)` — React wouldn't notice. The reference is the same, so React's `Object.is` check sees no change, and nothing re-renders. **You must produce a new array** (via `[...todos, newTodo]` or `.filter` or `.map`) for state updates to register. We'll lean on this in every step from here on.
-
-The reason `useState` exists at all is so React can tie a *component instance* to a piece of memory across renders. A plain `let todos = [...]` declared inside the function body would be reinitialized every render — useless for anything that needs to change over time.
+`useState` ties a piece of memory to the component across renders — a plain `let` would reset every render. The argument is only used on the first render; after that, the value comes from whatever the setter was last called with. Calling the setter schedules a re-render; it doesn't change `todos` in the current render, and it doesn't mutate. Every state update from here on produces a *new* array (`[...todos, x]`, `.filter`, `.map`), never an in-place mutation — React detects changes by reference equality, so a new reference is non-negotiable.
 
 ## What you should see now
 

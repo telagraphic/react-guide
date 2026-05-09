@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation } from 'react-router';
 import ReactMarkdown from 'react-markdown';
 import type { Components } from 'react-markdown';
@@ -45,7 +45,7 @@ export function MarkdownPage({ body }: Props) {
           );
         }
         const html = highlight(code, match[1], isDark);
-        return <span dangerouslySetInnerHTML={{ __html: html }} />;
+        return <CodeBlock code={code} html={html} />;
       },
     }),
     [isDark],
@@ -92,4 +92,98 @@ function childrenToText(node: React.ReactNode): string {
     return childrenToText((node as { props: { children?: React.ReactNode } }).props.children);
   }
   return '';
+}
+
+interface CodeBlockProps {
+  code: string;
+  html: string;
+}
+
+function CodeBlock({ code, html }: CodeBlockProps) {
+  const [copied, setCopied] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(
+    () => () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    },
+    [],
+  );
+
+  async function handleCopy() {
+    try {
+      await navigator.clipboard.writeText(code);
+      setCopied(true);
+      if (timerRef.current) clearTimeout(timerRef.current);
+      timerRef.current = setTimeout(() => setCopied(false), 1800);
+    } catch {
+      /* clipboard unavailable (e.g. non-secure context); silently no-op */
+    }
+  }
+
+  const visibility = copied
+    ? 'opacity-100'
+    : 'opacity-0 group-hover:opacity-100 focus-visible:opacity-100';
+
+  return (
+    <span className="relative block group">
+      <span className="block" dangerouslySetInnerHTML={{ __html: html }} />
+      <button
+        type="button"
+        onClick={handleCopy}
+        aria-label={copied ? 'Copied to clipboard' : 'Copy code to clipboard'}
+        title={copied ? 'Copied' : 'Copy'}
+        className={`absolute top-2 right-2 inline-flex items-center justify-center gap-1.5 min-w-[4.75rem] px-2 py-1 text-[11px] font-medium rounded-md border border-border bg-bg/80 backdrop-blur-sm text-muted hover:text-fg hover:border-accent/50 focus-visible:text-fg focus-visible:border-accent/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 transition-opacity duration-150 ${visibility}`}
+      >
+        {copied ? (
+          <>
+            <CheckIcon />
+            <span>Copied</span>
+          </>
+        ) : (
+          <>
+            <CopyIcon />
+            <span>Copy</span>
+          </>
+        )}
+      </button>
+    </span>
+  );
+}
+
+function CopyIcon() {
+  return (
+    <svg
+      width="12"
+      height="12"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+    </svg>
+  );
+}
+
+function CheckIcon() {
+  return (
+    <svg
+      width="12"
+      height="12"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="3"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M20 6 9 17l-5-5" />
+    </svg>
+  );
 }

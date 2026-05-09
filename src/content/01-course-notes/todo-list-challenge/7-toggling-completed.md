@@ -8,18 +8,18 @@ Clicking a todo's checkbox toggles its `completed` field. The UI re-renders to s
 
 ## React concepts you'll use
 
-- **Controlled checkboxes** — `checked={todo.completed} onChange={…}`. Same pattern as the text input from step 6.
-- **Object spread for immutable updates** — `{ ...todo, completed: !todo.completed }`. New object, one field overridden.
-- **`.map` for "replace one item in an array"** — produces a new array where the matching item is the new object and everything else is unchanged.
-- **Handlers down, data up** — `Todo` calls a callback; the parent decides what to do with the new value.
+- Controlled checkboxes (same shape as step 6's text input)
+- Object spread for immutable updates — see [Destructuring and spread](/concepts/modern-js/destructuring-and-spread)
+- `.map` to replace one item in an array
+- Handlers down, data up
 
-## Hints
+## Implementation
 
-1. In `TodoList`, write `handleUpdateTodo(updatedTodo)`. It uses `.map` to replace the todo with the matching `id` and leave the rest alone.
-2. Pass `handleUpdateTodo` to `<Todo />` as a prop.
-3. In `Todo`, write `handleCheckboxClick` — it calls `handleUpdateTodo({ ...todo, completed: !todo.completed })`.
-4. Wire it to the checkbox via `onChange={handleCheckboxClick}`.
-5. Drop the `disabled` and `readOnly` attributes from the checkbox now that it has a real `onChange`.
+- [ ] `TodoList` exposes a handler that takes an updated todo and replaces the matching item in state immutably
+- [ ] That handler is passed to each `<Todo />` as a prop
+- [ ] The checkbox in `Todo` has a real `onChange` (drop `disabled` and `readOnly`)
+- [ ] When the checkbox changes, `Todo` builds a new todo object with `completed` flipped and asks the parent to apply it
+- [ ] The parent's array is updated to a *new* array (not mutated)
 
 ## Try it
 
@@ -89,27 +89,7 @@ export default function TodoList() {
 
 ## Why this works
 
-This is the central state-update pattern in React, and you'll use it everywhere. It comes in two layers:
-
-**Layer 1 — new object, one field changed:**
-
-```js
-{ ...todo, completed: !todo.completed }
-```
-
-The spread copies every property from `todo`, then `completed: !todo.completed` overwrites the one field we want to change. The original `todo` is untouched. This is *the* immutable update pattern for objects.
-
-**Layer 2 — new array, one item replaced:**
-
-```js
-todos.map((todo) => (todo.id === updatedTodo.id ? updatedTodo : todo))
-```
-
-`.map` produces a new array. For the matching todo it returns the *new* object; for every other todo it returns the *same* reference. That preserves identity for unchanged items, which means React's reconciler won't re-render them — only the one that changed.
-
-The conceptual move worth internalizing: `Todo` doesn't *update* anything itself. It builds the new object it *wants* to exist (`{ ...todo, completed: !todo.completed }`) and asks its parent to apply it. The parent owns the array, so the parent owns the update.
-
-This is "data down, handlers up": the parent passes data (`todo`) and handlers (`handleUpdateTodo`) down through props, and the child invokes the handler when something needs to change. The child has no idea where the data is stored, and it stays a pure function of its inputs.
+Two immutable patterns stack: `{ ...todo, completed: !todo.completed }` makes a new object with one field changed, and `todos.map(t => t.id === updated.id ? updated : t)` produces a new array with that item replaced and every other reference preserved. Identity preservation is what lets React skip re-rendering unchanged rows. The conceptual move: `Todo` doesn't *update* anything itself — it builds the object it *wants* to exist and asks the parent to apply it. The parent owns the array, so the parent owns the update.
 
 ## What you should see now
 
