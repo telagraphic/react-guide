@@ -5,6 +5,90 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* ----------------------------------------------------------------------- */
+/* Local fonts — rooted at repo /fonts                                           */
+/* ----------------------------------------------------------------------- */
+
+@font-face {
+  font-family: 'Basier Circle';
+  src: url('../../fonts/basier-circle/Basier Circle Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Basier Circle';
+  src: url('../../fonts/basier-circle/Basier Circle Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Basier Circle';
+  src: url('../../fonts/basier-circle/Basier Circle Italic.woff2') format('woff2');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Basier Circle';
+  src: url('../../fonts/basier-circle/BasierCircle SemiBold.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Basier Circle';
+  src: url('../../fonts/basier-circle/BasierCircle Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'PP Editorial New';
+  src: url('../../fonts/editorial-new/PPEditorialNew-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'PP Editorial New';
+  src: url('../../fonts/editorial-new/PPEditorialNew-Italic.otf') format('opentype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'PP Editorial New';
+  src: url('../../fonts/editorial-new/PPEditorialNew-Ultrabold.otf') format('opentype');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Maple Mono';
+  src: url('../../fonts/maple-mono/MapleMono-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Maple Mono';
+  src: url('../../fonts/maple-mono/MapleMono-Italic.ttf') format('truetype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* ----------------------------------------------------------------------- */
 /* Theme tokens — Dracula PRO Light is the :root default, Dracula is .dark */
 /* ----------------------------------------------------------------------- */
 
@@ -67,8 +151,9 @@
   --color-red: var(--color-red);
   --color-yellow: var(--color-yellow);
 
-  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-sans: 'Basier Circle', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'PP Editorial New', Georgia, 'Times New Roman', serif;
+  --font-mono: 'Maple Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
 /* ----------------------------------------------------------------------- */
@@ -79,7 +164,7 @@ html, body, #root { height: 100%; }
 
 body {
   font-family: var(--font-sans);
-  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  font-weight: 400;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -133,7 +218,7 @@ pre.shiki {
   --tw-prose-quotes: var(--color-fg);
   --tw-prose-quote-borders: var(--color-accent);
   --tw-prose-captions: var(--color-muted);
-  --tw-prose-code: var(--color-pink);
+  /* --tw-prose-code: var(--color-pink); */
   --tw-prose-pre-code: var(--color-fg);
   --tw-prose-pre-bg: var(--color-surface);
   --tw-prose-th-borders: var(--color-border);
@@ -145,3 +230,29 @@ pre.shiki {
 .prose code::before, .prose code::after { content: ''; }
 .prose a { text-decoration-color: color-mix(in oklab, var(--color-accent) 60%, transparent); }
 .prose a:hover { text-decoration-color: var(--color-accent); }
+
+.prose  h2 {
+  font-weight: 500;
+
+}
+
+.prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+
+/* Editorial for page-leading titles inside markdown */
+.prose h1 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+
+
+/* Route heroes: Tailwind's `font-display` utility omits quotes for multi-word families */
+.font-editorial {
+  font-family: var(--font-display);
+}

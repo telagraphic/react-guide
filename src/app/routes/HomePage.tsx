@@ -9,7 +9,9 @@ export function HomePage() {
     <div className="space-y-12">
       <header className="space-y-3">
         <p className="font-mono text-xs uppercase tracking-wider text-accent">React Guide</p>
-        <h1 className="text-4xl font-bold tracking-tight">Personal learning library.</h1>
+        <h1 className="font-editorial text-4xl font-extrabold tracking-tight">
+          Personal learning library.
+        </h1>
         <p className="text-muted max-w-2xl">
           Notes, concepts, and code challenges for learning React. Press{' '}
           <kbd className="font-mono text-xs px-1.5 py-0.5 rounded border border-border bg-surface">

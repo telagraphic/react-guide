@@ -17,7 +17,7 @@ export function ErrorView() {
     <div className="min-h-screen flex items-center justify-center bg-bg text-fg p-8">
       <div className="max-w-md text-center space-y-4">
         <p className="font-mono text-xs uppercase tracking-wider text-accent">Error</p>
-        <h1 className="text-2xl font-semibold">{title}</h1>
+        <h1 className="font-editorial text-2xl font-semibold">{title}</h1>
         <p className="text-muted">{detail}</p>
         <Link
           to="/"
