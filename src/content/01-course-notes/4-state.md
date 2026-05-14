@@ -8,8 +8,6 @@ Two big ideas:
 
 If we break it down, we've seen how you create your View with JSX, and how you encapsulate that View inside of a function to get your component. But there's still one piece of the formula we need to talk about, state.
 
-
-
 ## useState
 
 
