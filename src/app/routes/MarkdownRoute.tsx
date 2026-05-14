@@ -1,4 +1,4 @@
-import { useLoaderData, useParams } from 'react-router';
+import { useLoaderData } from 'react-router';
 import type { LoaderFunctionArgs } from 'react-router';
 
 import { MarkdownPage } from '@/components/MarkdownPage';
@@ -6,7 +6,6 @@ import { findPageBySlug, loadPageBody } from '@/lib/content';
 
 interface PageLoaderData {
   body: string;
-  slug: string;
 }
 
 export function pageLoader({ params }: LoaderFunctionArgs): PageLoaderData {
@@ -21,13 +20,11 @@ export function pageLoader({ params }: LoaderFunctionArgs): PageLoaderData {
   const body = loadPageBody(slug);
   if (body === null) throw new Response(`Markdown for "${slug}" failed to load`, { status: 500 });
 
-  return { body, slug };
+  return { body };
 }
 
 export function MarkdownRoute() {
-  const { body, slug } = useLoaderData() as PageLoaderData;
-  useParams();
-  const page = findPageBySlug(slug);
+  const { body } = useLoaderData() as PageLoaderData;
 
   return (
     <div className="space-y-4">
