@@ -8,7 +8,7 @@ export function HomePage() {
   return (
     <div className="space-y-12">
       <header className="space-y-3">
-        <p className="font-mono text-xs uppercase tracking-wider text-accent">React Guide</p>
+        {/* <p className="font-mono text-xs uppercase tracking-wider text-accent">React Guide</p> */}
         <h1 className="font-editorial text-4xl font-extrabold tracking-tight">
           Personal learning library.
         </h1>

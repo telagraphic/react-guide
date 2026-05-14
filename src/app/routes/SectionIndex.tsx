@@ -25,7 +25,7 @@ export function SectionIndex() {
   return (
     <div className="space-y-8">
       <header>
-        <p className="font-mono text-xs uppercase tracking-wider text-accent">Section</p>
+        {/* <p className="font-mono text-xs uppercase tracking-wider text-accent">Section</p> */}
         <h1 className="font-editorial text-3xl font-extrabold mt-2">{section.title}</h1>
       </header>
 

@@ -31,11 +31,11 @@ export function MarkdownRoute() {
 
   return (
     <div className="space-y-4">
-      {page && (
+      {/* {page && (
         <p className="font-mono text-xs uppercase tracking-wider text-accent">
           {page.sectionTitle}
         </p>
-      )}
+      )} */}
       <MarkdownPage body={body} />
     </div>
   );

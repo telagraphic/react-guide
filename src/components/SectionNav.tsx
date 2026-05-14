@@ -46,9 +46,9 @@ function NavTree({ nodes, depth }: { nodes: NavNode[]; depth: number }) {
             </NavLink>
           ) : (
             <>
-              <p className="px-3 py-1 text-xs font-medium uppercase tracking-wider text-muted">
+              {/* <p className="px-3 py-1 text-xs font-medium uppercase tracking-wider text-muted">
                 {node.title}
-              </p>
+              </p> */}
               <NavTree nodes={node.children} depth={depth + 1} />
             </>
           )}
