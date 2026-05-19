@@ -1,7 +1,15 @@
 import { Link, useLoaderData, useParams } from 'react-router';
 import type { LoaderFunctionArgs } from 'react-router';
 
-import { findSection, type NavBranch, type NavNode } from '@/lib/content';
+import {
+  challengeFolderId,
+  findSection,
+  firstPageInFolder,
+  getChallengeFolders,
+  isChallengesSection,
+  type NavBranch,
+  type NavNode,
+} from '@/lib/content';
 
 interface SectionLoaderData {
   sectionSlug: string;
@@ -30,9 +38,35 @@ export function SectionIndex() {
       </header>
 
       <div className="space-y-6">
-        <NodeList nodes={section.children} />
+        {isChallengesSection(section.slug) ? (
+          <ChallengeFolderList folders={getChallengeFolders(section)} />
+        ) : (
+          <NodeList nodes={section.children} />
+        )}
       </div>
     </div>
+  );
+}
+
+function ChallengeFolderList({ folders }: { folders: NavBranch[] }) {
+  return (
+    <ul className="space-y-2">
+      {folders.map((folder) => {
+        const first = firstPageInFolder(folder);
+        const id = challengeFolderId(folder);
+        if (!first) return null;
+        return (
+          <li key={folder.slug}>
+            <Link
+              to={first.href}
+              className="block rounded-md border border-border bg-surface px-4 py-3 hover:border-accent/50 hover:text-accent text-fg transition-colors font-mono text-sm"
+            >
+              {id}
+            </Link>
+          </li>
+        );
+      })}
+    </ul>
   );
 }
 

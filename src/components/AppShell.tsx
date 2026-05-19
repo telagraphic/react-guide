@@ -3,8 +3,13 @@ import { Link, NavLink, Outlet, useLocation, useParams } from 'react-router';
 
 import { CommandPalette } from './CommandPalette';
 import { ThemeToggle } from './ThemeToggle';
+import { ChallengesNav } from './ChallengesNav';
 import { SectionNav } from './SectionNav';
-import { findSection, navTree } from '@/lib/content';
+import {
+  findSection,
+  isChallengesSection,
+  navTree,
+} from '@/lib/content';
 
 export function AppShell() {
   const [paletteOpen, setPaletteOpen] = useState(false);
@@ -37,7 +42,11 @@ export function AppShell() {
       <div className="flex-1 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-[16rem_minmax(0,1fr)] gap-8 py-8">
         <aside className="hidden lg:block">
           {activeSection ? (
-            <SectionNav section={activeSection} />
+            isChallengesSection(activeSection.slug) ? (
+              <ChallengesNav section={activeSection} />
+            ) : (
+              <SectionNav section={activeSection} />
+            )
           ) : (
             <TopLevelNav />
           )}

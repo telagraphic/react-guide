@@ -262,6 +262,48 @@ export function findSection(sectionSlug: string): NavBranch | undefined {
   return node;
 }
 
+/** Top-level walkthrough section (`03-challenges` → slug `challenges`). */
+export const CHALLENGES_SECTION_SLUG = 'challenges';
+
+export function isChallengesSection(sectionSlug: string): boolean {
+  return sectionSlug === CHALLENGES_SECTION_SLUG;
+}
+
+/** Challenge walkthrough folders directly under the challenges section. */
+export function getChallengeFolders(section: NavBranch): NavBranch[] {
+  return section.children.filter((n): n is NavBranch => n.kind === 'folder');
+}
+
+/** Last URL segment for a challenge folder, e.g. `todo-list-challenge`. */
+export function challengeFolderId(folder: NavBranch): string {
+  const seg = folder.segments.at(-1) ?? '';
+  return stripNumericPrefix(seg);
+}
+
+export function findChallengeFolder(
+  section: NavBranch,
+  challengeId: string,
+): NavBranch | undefined {
+  return getChallengeFolders(section).find(
+    (f) => challengeFolderId(f) === challengeId,
+  );
+}
+
+/** First page in a folder (for default links from the challenge list). */
+export function firstPageInFolder(folder: NavBranch): NavLeaf | undefined {
+  return folder.children.find((n): n is NavLeaf => n.kind === 'page');
+}
+
+/**
+ * Challenge id from a pathname like `/challenges/todo-list-challenge/overview`,
+ * or `undefined` on `/challenges` only.
+ */
+export function challengeIdFromPathname(pathname: string): string | undefined {
+  const parts = pathname.replace(/\/+$/, '').split('/').filter(Boolean);
+  if (parts[0] !== CHALLENGES_SECTION_SLUG || parts.length < 2) return undefined;
+  return parts[1];
+}
+
 // --------------------------------------------------------------------------
 // Command-palette index
 // --------------------------------------------------------------------------
